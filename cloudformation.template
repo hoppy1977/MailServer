@@ -1,6 +1,6 @@
 {
     "Resources" : {
-        "Ec2Instance" : {
+        "MailServerEc2Instance" : {
             "Type" : "AWS::EC2::Instance",
             "Properties" : {
                 "Tags" : [
@@ -11,7 +11,7 @@
                 ],
                 "SecurityGroups" : [
                     {
-                        "Ref" : "InstanceSecurityGroup"
+                        "Ref" : "MailServerSecurityGroup"
                     }
                 ],
                 "KeyName"        : "MailServer",
@@ -19,7 +19,15 @@
                 "InstanceType"   : "t2.micro"
             }
         },
-        "InstanceSecurityGroup" : {
+        "MailServerEip"       : {
+            "Type" : "AWS::EC2::EIP",
+            "Properties" : {
+                "InstanceId" : {
+                    "Ref" : "MailServerEc2Instance"
+                }
+            }
+        },
+        "MailServerSecurityGroup" : {
             "Type" : "AWS::EC2::SecurityGroup",
             "Properties" : {
                 "Tags" : [
