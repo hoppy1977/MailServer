@@ -1,13 +1,17 @@
 {
-    "Mappings" : {
-        "Constants" : {
-            "InstanceValues" : {
-                "ServerName" : "MailServer_Test",
-                "Domain"     : "mailserver.com"
-            }
+    "Parameters" : {
+        "MailServerTagParameter" : {
+            "Type" : "String",
+            "Default" : "MailServer_Test",
+            "Description" : "Enter the name of your mail-server. This will be used in tags identifying your AWS resources."
+        },
+        "DomainParameter"     : {
+            "Type" : "String",
+            "Default" : "mailserver.com",
+            "Description" : "Enter the domain of your mail-server."
         }
     },
-    "Resources" : {
+    "Resources"  : {
         "MailServerEc2Instance" : {
             "Type" : "AWS::EC2::Instance",
             "Properties" : {
@@ -15,11 +19,7 @@
                     {
                         "Key" : "Name",
                         "Value" : {
-                            "Fn::FindInMap" : [
-                                "Constants",
-                                "InstanceValues",
-                                "ServerName"
-                            ]
+                            "Ref" : "MailServerTagParameter"
                         }
                     }
                 ],
@@ -48,11 +48,7 @@
                     {
                         "Key" : "Name",
                         "Value" : {
-                            "Fn::FindInMap" : [
-                                "Constants",
-                                "InstanceValues",
-                                "ServerName"
-                            ]
+                            "Ref" : "MailServerTagParameter"
                         }
                     }
                 ],
@@ -119,21 +115,13 @@
             "Type" : "AWS::Route53::HostedZone",
             "Properties" : {
                 "Name" : {
-                    "Fn::FindInMap" : [
-                        "Constants",
-                        "InstanceValues",
-                        "Domain"
-                    ]
+                    "Ref" : "DomainParameter"
                 },
                 "HostedZoneTags" : [
                     {
                         "Key" : "Name",
                         "Value" : {
-                            "Fn::FindInMap" : [
-                                "Constants",
-                                "InstanceValues",
-                                "ServerName"
-                            ]
+                            "Ref" : "MailServerTagParameter"
                         }
                     }
                 ]
