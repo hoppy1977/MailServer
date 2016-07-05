@@ -3,7 +3,7 @@
         "MailServerTagParameter" : {
             "Type" : "String",
             "Default" : "MailServer_Test",
-            "Description" : "Enter the name of your mail-server. This will be used in tags identifying your AWS resources."
+            "Description" : "This will be used in tags identifying your AWS resources."
         },
         "DomainParameter"     : {
             "Type" : "String",
