@@ -3,7 +3,7 @@
         "Constants" : {
             "InstanceValues" : {
                 "ServerName" : "MailServer_Test",
-                "Domain" : "shanehopcroft.com"
+                "Domain"     : "mailserver.com"
             }
         }
     },
@@ -14,7 +14,13 @@
                 "Tags" : [
                     {
                         "Key" : "Name",
-                        "Value" : { "Fn::FindInMap" : [ "Constants", "InstanceValues", "ServerName" ]}
+                        "Value" : {
+                            "Fn::FindInMap" : [
+                                "Constants",
+                                "InstanceValues",
+                                "ServerName"
+                            ]
+                        }
                     }
                 ],
                 "SecurityGroups" : [
@@ -41,7 +47,13 @@
                 "Tags" : [
                     {
                         "Key" : "Name",
-                        "Value" : { "Fn::FindInMap" : [ "Constants", "InstanceValues", "ServerName" ]}
+                        "Value" : {
+                            "Fn::FindInMap" : [
+                                "Constants",
+                                "InstanceValues",
+                                "ServerName"
+                            ]
+                        }
                     }
                 ],
                 "GroupDescription" : "Security group for MailServer",
@@ -99,6 +111,30 @@
                         "FromPort"   : "587",
                         "ToPort"     : "587",
                         "CidrIp"     : "0.0.0.0/0"
+                    }
+                ]
+            }
+        },
+        "DomainHostedZone"        : {
+            "Type" : "AWS::Route53::HostedZone",
+            "Properties" : {
+                "Name" : {
+                    "Fn::FindInMap" : [
+                        "Constants",
+                        "InstanceValues",
+                        "Domain"
+                    ]
+                },
+                "HostedZoneTags" : [
+                    {
+                        "Key" : "Name",
+                        "Value" : {
+                            "Fn::FindInMap" : [
+                                "Constants",
+                                "InstanceValues",
+                                "ServerName"
+                            ]
+                        }
                     }
                 ]
             }
