@@ -1,4 +1,12 @@
 {
+    "Mappings" : {
+        "Constants" : {
+            "InstanceValues" : {
+                "ServerName" : "MailServer_Test",
+                "Domain" : "shanehopcroft.com"
+            }
+        }
+    },
     "Resources" : {
         "MailServerEc2Instance" : {
             "Type" : "AWS::EC2::Instance",
@@ -6,7 +14,7 @@
                 "Tags" : [
                     {
                         "Key" : "Name",
-                        "Value" : "MailServer_Test"
+                        "Value" : { "Fn::FindInMap" : [ "Constants", "InstanceValues", "ServerName" ]}
                     }
                 ],
                 "SecurityGroups" : [
@@ -19,7 +27,7 @@
                 "InstanceType"   : "t2.micro"
             }
         },
-        "MailServerEip"       : {
+        "MailServerEip"         : {
             "Type" : "AWS::EC2::EIP",
             "Properties" : {
                 "InstanceId" : {
@@ -33,7 +41,7 @@
                 "Tags" : [
                     {
                         "Key" : "Name",
-                        "Value" : "MailServer_Test"
+                        "Value" : { "Fn::FindInMap" : [ "Constants", "InstanceValues", "ServerName" ]}
                     }
                 ],
                 "GroupDescription" : "Security group for MailServer",
