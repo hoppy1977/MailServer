@@ -3,6 +3,12 @@
         "Ec2Instance" : {
             "Type" : "AWS::EC2::Instance",
             "Properties" : {
+                "Tags" : [
+                    {
+                        "Key" : "Name",
+                        "Value" : "MailServer_Test"
+                    }
+                ],
                 "SecurityGroups" : [
                     {
                         "Ref" : "InstanceSecurityGroup"
@@ -16,12 +22,66 @@
         "InstanceSecurityGroup" : {
             "Type" : "AWS::EC2::SecurityGroup",
             "Properties" : {
-                "GroupDescription" : "Enable SSH access via port 22",
+                "Tags" : [
+                    {
+                        "Key" : "Name",
+                        "Value" : "MailServer_Test"
+                    }
+                ],
+                "GroupDescription" : "Security group for MailServer",
                 "SecurityGroupIngress" : [
                     {
                         "IpProtocol" : "tcp",
                         "FromPort"   : "22",
                         "ToPort"     : "22",
+                        "CidrIp"     : "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort"   : "80",
+                        "ToPort"     : "80",
+                        "CidrIp"     : "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort"   : "443",
+                        "ToPort"     : "443",
+                        "CidrIp"     : "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort"   : "25",
+                        "ToPort"     : "25",
+                        "CidrIp"     : "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort"   : "465",
+                        "ToPort"     : "465",
+                        "CidrIp"     : "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort"   : "143",
+                        "ToPort"     : "143",
+                        "CidrIp"     : "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort"   : "993",
+                        "ToPort"     : "993",
+                        "CidrIp"     : "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort"   : "5432",
+                        "ToPort"     : "5432",
+                        "CidrIp"     : "0.0.0.0/0"
+                    },
+                    {
+                        "IpProtocol" : "tcp",
+                        "FromPort"   : "587",
+                        "ToPort"     : "587",
                         "CidrIp"     : "0.0.0.0/0"
                     }
                 ]
