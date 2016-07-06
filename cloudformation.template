@@ -2,13 +2,13 @@
     "Parameters" : {
         "MailServerTagParameter" : {
             "Type" : "String",
-            "Default" : "MailServer_Test",
+            "Default" : "MailServer",
             "Description" : "This will be used in tags identifying your AWS resources."
         },
         "DomainParameter"     : {
             "Type" : "String",
-            "Default" : "mailserver.com",
-            "Description" : "Enter the domain of your mail-server."
+            "Default" : "shanehopcroft.com",
+            "Description" : "Enter the domain of your mail-server (the hosted zone must already exist)."
         },
         "KeyPairNameParameter"     : {
             "Type" : "String",
@@ -19,8 +19,8 @@
     "Resources"  : {
         "MailServerEc2Instance" : {
             "Type" : "AWS::EC2::Instance",
-            "Properties" : {
-                "Tags" : [
+			"Properties" : {
+				"Tags" : [
                     {
                         "Key" : "Name",
                         "Value" : {
@@ -48,7 +48,7 @@
         },
         "MailServerSecurityGroup" : {
             "Type" : "AWS::EC2::SecurityGroup",
-            "Properties" : {
+			"Properties" : {
                 "Tags" : [
                     {
                         "Key" : "Name",
@@ -57,7 +57,7 @@
                         }
                     }
                 ],
-                "GroupDescription" : "Security group for MailServer",
+                "GroupDescription" : {"Fn::Join" : ["", ["Security group for ", { "Ref" : "MailServerTagParameter" }]]},
                 "SecurityGroupIngress" : [
                     {
                         "IpProtocol" : "tcp",
