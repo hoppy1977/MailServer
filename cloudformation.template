@@ -9,6 +9,11 @@
             "Type" : "String",
             "Default" : "mailserver.com",
             "Description" : "Enter the domain of your mail-server."
+        },
+        "KeyPairNameParameter"     : {
+            "Type" : "String",
+            "Default" : "MailServer",
+            "Description" : "Enter the name of the EC2 key pair you want to use for this instance (the key pair must already exist)."
         }
     },
     "Resources"  : {
@@ -28,7 +33,7 @@
                         "Ref" : "MailServerSecurityGroup"
                     }
                 ],
-                "KeyName"        : "MailServer",
+                "KeyName"        : { "Ref" : "KeyPairNameParameter"},
                 "ImageId"        : "ami-dc361ebf",
                 "InstanceType"   : "t2.micro"
             }
@@ -111,21 +116,31 @@
                 ]
             }
         },
-        "DomainHostedZone"        : {
-            "Type" : "AWS::Route53::HostedZone",
+
+		"MailServerDnsARecord" : {
+            "Type" : "AWS::Route53::RecordSet",
             "Properties" : {
-                "Name" : {
-                    "Ref" : "DomainParameter"
-                },
-                "HostedZoneTags" : [
-                    {
-                        "Key" : "Name",
-                        "Value" : {
-                            "Ref" : "MailServerTagParameter"
-                        }
-                    }
+                "HostedZoneName" : {"Fn::Join" : ["", [{ "Ref" : "DomainParameter" }, "."]]},
+                "Name" : {"Fn::Join" : ["", ["mail.", { "Ref" : "DomainParameter" }]]},
+                "Type" : "A",
+                "TTL" : "300",
+				"ResourceRecords" : [
+                    {"Ref" : "MailServerEip"}
                 ]
-            }
+            }			
+        },
+
+		"MailServerDnsMxRecord" : {
+            "Type" : "AWS::Route53::RecordSet",
+            "Properties" : {
+                "HostedZoneName" : {"Fn::Join" : ["", [{ "Ref" : "DomainParameter" }, "."]]},
+                "Name" : {"Fn::Join" : ["", [{ "Ref" : "DomainParameter" }, "."]]},
+                "Type" : "MX",
+                "TTL" : "300",
+				"ResourceRecords" : [
+                    {"Fn::Join" : ["", ["10 mail.", { "Ref" : "DomainParameter" }]]}
+                ]
+            }			
         }
     }
 }
