@@ -1,0 +1,49 @@
+{
+	"AWSTemplateFormatVersion" : "2010-09-09",
+
+	"Description" : "",
+
+	"Parameters" : {
+        "DomainParameter"     : {
+            "Type" : "String",
+            "Default" : "shanehopcroft.com",
+            "Description" : "Enter the domain of your mail-server (the hosted zone must already exist)."
+        },
+        "EipParameter"     : {
+            "Type" : "String",
+            "Default" : "52.63.161.207",
+            "Description" : "Enter the EIP of your mail server (the EIP must already exist)."
+        }
+	},
+
+	"Resources" : {
+			"MailServerDnsARecord" : {
+            "Type" : "AWS::Route53::RecordSet",
+            "Properties" : {
+                "HostedZoneName" : {"Fn::Join" : ["", [{ "Ref" : "DomainParameter" }, "."]]},
+                "Name" : {"Fn::Join" : ["", ["mail.", { "Ref" : "DomainParameter" }]]},
+                "Type" : "A",
+                "TTL" : "300",
+				"ResourceRecords" : [
+                    {"Ref" : "EipParameter"}
+                ]
+            }			
+        },
+
+		"MailServerDnsMxRecord" : {
+            "Type" : "AWS::Route53::RecordSet",
+            "Properties" : {
+                "HostedZoneName" : {"Fn::Join" : ["", [{ "Ref" : "DomainParameter" }, "."]]},
+                "Name" : {"Fn::Join" : ["", [{ "Ref" : "DomainParameter" }, "."]]},
+                "Type" : "MX",
+                "TTL" : "300",
+				"ResourceRecords" : [
+                    {"Fn::Join" : ["", ["10 mail.", { "Ref" : "DomainParameter" }]]}
+                ]
+            }			
+        }
+	},
+
+	"Outputs" : {
+	}
+}

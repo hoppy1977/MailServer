@@ -1,26 +1,27 @@
 {
-    "Parameters" : {
+    "Description" : "",
+    "Parameters"  : {
         "MailServerTagParameter" : {
             "Type" : "String",
             "Default" : "MailServer",
             "Description" : "This will be used in tags identifying your AWS resources."
         },
-        "DomainParameter"     : {
-            "Type" : "String",
-            "Default" : "shanehopcroft.com",
-            "Description" : "Enter the domain of your mail-server (the hosted zone must already exist)."
-        },
-        "KeyPairNameParameter"     : {
+        "KeyPairNameParameter"   : {
             "Type" : "String",
             "Default" : "MailServer",
             "Description" : "Enter the name of the EC2 key pair you want to use for this instance (the key pair must already exist)."
+        },
+        "EipParameter"           : {
+            "Type" : "String",
+            "Default" : "52.63.161.207",
+            "Description" : "Enter the EIP of your mail server (the EIP must already exist)."
         }
     },
-    "Resources"  : {
+    "Resources"   : {
         "MailServerEc2Instance" : {
             "Type" : "AWS::EC2::Instance",
-			"Properties" : {
-				"Tags" : [
+            "Properties" : {
+                "Tags" : [
                     {
                         "Key" : "Name",
                         "Value" : {
@@ -33,22 +34,27 @@
                         "Ref" : "MailServerSecurityGroup"
                     }
                 ],
-                "KeyName"        : { "Ref" : "KeyPairNameParameter"},
+                "KeyName"        : {
+                    "Ref" : "KeyPairNameParameter"
+                },
                 "ImageId"        : "ami-dc361ebf",
                 "InstanceType"   : "t2.micro"
             }
         },
-        "MailServerEip"         : {
-            "Type" : "AWS::EC2::EIP",
+        "MailServerIPAssoc"     : {
+            "Type" : "AWS::EC2::EIPAssociation",
             "Properties" : {
                 "InstanceId" : {
                     "Ref" : "MailServerEc2Instance"
+                },
+                "EIP"        : {
+                    "Ref" : "EipParameter"
                 }
             }
         },
         "MailServerSecurityGroup" : {
             "Type" : "AWS::EC2::SecurityGroup",
-			"Properties" : {
+            "Properties" : {
                 "Tags" : [
                     {
                         "Key" : "Name",
@@ -57,7 +63,17 @@
                         }
                     }
                 ],
-                "GroupDescription" : {"Fn::Join" : ["", ["Security group for ", { "Ref" : "MailServerTagParameter" }]]},
+                "GroupDescription" : {
+                    "Fn::Join" : [
+                        "",
+                        [
+                            "Security group for ",
+                            {
+                                "Ref" : "MailServerTagParameter"
+                            }
+                        ]
+                    ]
+                },
                 "SecurityGroupIngress" : [
                     {
                         "IpProtocol" : "tcp",
@@ -115,32 +131,8 @@
                     }
                 ]
             }
-        },
-
-		"MailServerDnsARecord" : {
-            "Type" : "AWS::Route53::RecordSet",
-            "Properties" : {
-                "HostedZoneName" : {"Fn::Join" : ["", [{ "Ref" : "DomainParameter" }, "."]]},
-                "Name" : {"Fn::Join" : ["", ["mail.", { "Ref" : "DomainParameter" }]]},
-                "Type" : "A",
-                "TTL" : "300",
-				"ResourceRecords" : [
-                    {"Ref" : "MailServerEip"}
-                ]
-            }			
-        },
-
-		"MailServerDnsMxRecord" : {
-            "Type" : "AWS::Route53::RecordSet",
-            "Properties" : {
-                "HostedZoneName" : {"Fn::Join" : ["", [{ "Ref" : "DomainParameter" }, "."]]},
-                "Name" : {"Fn::Join" : ["", [{ "Ref" : "DomainParameter" }, "."]]},
-                "Type" : "MX",
-                "TTL" : "300",
-				"ResourceRecords" : [
-                    {"Fn::Join" : ["", ["10 mail.", { "Ref" : "DomainParameter" }]]}
-                ]
-            }			
         }
+    },
+    "Outputs"     : {
     }
 }
